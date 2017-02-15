@@ -78,15 +78,22 @@ var locations = [
 ];
 
 
-var map, infowindow;
+var map, infowindow, filter;
 
-// // string helper function
-// String.prototype.contains = function(it) { 
-// 	return this.indexOf(it) != -1; 
-// };
 
 // VIEW MODEL
 var ViewModel = function() {
+	
+	// jquery stuff
+	// toggle show hide museum list
+	$('.slidingDiv').hide();
+
+	$('.show_hide').click(function( e ){
+        $(this).find('i:first').toggleClass('glyphicon glyphicon-plus glyphicon glyphicon-minus');
+        $(".slidingDiv").slideToggle();
+	});
+	
+
 	var self = this;
 
 	// locations array
@@ -98,6 +105,7 @@ var ViewModel = function() {
 	var marker, i;
 
 	var infowindow = new google.maps.InfoWindow();
+	
 	// create markers associate with each location
 	createMarkers();
 
@@ -123,18 +131,20 @@ var ViewModel = function() {
             new Option("Culture", 3),
             new Option("Other", 4)            
         ]),
-    self.selectedOption = ko.observable() 
+    self.selectedOption = ko.observable(5);
+    
+    self.selectedOption.subscribe(function (newValue) {
+    	filter = newValue;
+    	console.log(filter);
 
-    // search function
-    self.search = function() {
-    	if (this.selectedOption().optionName == "All"){
+    	if (filter == 5){
     		searchResults(locations);
     		for(var i = 0; i < locations_ko().length; i++){
     			showMarker(locations_ko()[i].marker);
     		}
     	}
 
-    	if (this.selectedOption().optionName == "Science"){
+    	else if (filter == 1){
     		searchResults([]);
     		for (var i = 0; i < locations_ko().length; i++){
     			if (locations_ko()[i].category == "science") {
@@ -147,7 +157,7 @@ var ViewModel = function() {
     		}
     	}
 
-    	if (this.selectedOption().optionName == "Art"){
+    	else if (filter == 2){
     		searchResults([]);
     		for (var i = 0; i < locations_ko().length; i++){
     			if (locations_ko()[i].category == "art") {
@@ -160,7 +170,7 @@ var ViewModel = function() {
     		}
     	}
 
-    	if (this.selectedOption().optionName == "Culture"){
+    	else if (filter == 3){
     		searchResults([]);
     		for (var i = 0; i < locations_ko().length; i++){
     			if (locations_ko()[i].category == "culture") {
@@ -173,7 +183,7 @@ var ViewModel = function() {
     		}
     	}
 
-    	if (this.selectedOption().optionName == "Other"){
+    	else if (filter == 4){
 			searchResults([]);
     		for (var i = 0; i < locations_ko().length; i++){
     			if (locations_ko()[i].category == "other") {
@@ -185,9 +195,10 @@ var ViewModel = function() {
     			}
     		}
     	}
-    };
-
-    // helper function to marker to hide markers
+    })
+    
+    
+    // helper function to hide markers
     function hideMarker(marker) {
     	marker.setMap(null);
     	
@@ -225,6 +236,13 @@ var ViewModel = function() {
 				
 				}
 			})(marker, i));
+
+			// disable marker animation when infowindow is closed
+			google.maps.event.addListener(infowindow, 'closeclick', function() {  
+				for (i = 0; i < locations_ko().length; i++){
+					locations_ko()[i].marker.setAnimation(null);
+				}
+			});
 		};
 	};
 
@@ -243,7 +261,8 @@ var ViewModel = function() {
         	location = results.location.formattedAddress,
     		contact = results.contact.formattedPhone,
     		url = results.url,
-    		setInfo(theLocation, location, contact);
+    		rating = results.rating,
+    		setInfo(theLocation, location, contact, rating);
     		
     	}).error(function(e){
     		infowindow.setContent("FourSquare information could not be loaded");
@@ -251,7 +270,7 @@ var ViewModel = function() {
 	}
 
 	// set content to info window of marker
-	function setInfo(theLocation, location, contact) {
+	function setInfo(theLocation, location, contact, rating) {
 		if (contact) {
 			infowindow.setContent(theLocation.name + "<br>" +
     							location + "<br>" + 
@@ -295,10 +314,17 @@ function initMap() {
 
 	// Load Google Map 
  	map = new google.maps.Map(document.getElementById('map'), {
-    	center: {lat: 29.735974, lng: -95.375633}, 
-    	zoom: 13,   
+    	center: {lat: 29.735974, lng: -95.399633}, 
+    	zoom: 14,   
     	mapTypeControl: true
   	});
+
+ 	// resize map when browser size changes (responsive map)
+ 	google.maps.event.addDomListener(window, "resize", function() {
+    	var center = map.getCenter();
+    	google.maps.event.trigger(map, "resize");
+    	map.setCenter(center); 
+	});
 
   	//Instantiate ViewModel
   	ko.applyBindings(new ViewModel());
@@ -308,4 +334,5 @@ function initMap() {
 function googleError() {
 	alert("Google Map could not be loaded");
 }
+
 

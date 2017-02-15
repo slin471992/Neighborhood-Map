@@ -1,8 +1,51 @@
 #map {
-
     height: 100vh;
+}
+
+#museum {
+	position: absolute;
+	top: 1px;
+	left: 10px;
 }
 
 .location {
     font-size: 14px;
 }
+
+li {
+	cursor: pointer;
+}
+
+.hover-grey:hover {
+	background-color: #F2F2F2;
+}
+
+.title-box {
+	width: 310px;
+	background-color: rgba(92, 184, 92, 0.8);
+	/*background-color: green;*/
+	border: 5px;
+	padding: 5px;
+	margin: 0px;
+}
+
+.title {
+	color: white;
+}
+
+.museum-list {
+	width: 310px;
+	background-color: rgba(255, 255, 255, 0.8);
+	overflow-y:auto;
+}
+
+.fixed {
+	width: 310px;
+}
+
+
+
+
+
+
+

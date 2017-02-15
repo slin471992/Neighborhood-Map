@@ -2,51 +2,49 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1">
         <link href='https://fonts.googleapis.com/css?family=Lato:100,300' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <link rel="stylesheet" href="css/style.css">
         <title>Houston Museums</title>
-
     </head>
 
     <body>
-
-        <div class="container">
-
-            <div class="row">
-                <div class="col-md-4">
-                    <h2>Houston Museums</h2>
-            
-                    <p>
-                        Filter Search Results:
-                        <select data-bind=  "options: availableOptions,
-                                            optionsText: 'optionName',
-                                            value: selectedOption,
-                                            optionsCaption: 'Choose...'">
-                        </select>
-                        <br/>
-                        <input type="button" data-bind="click: search, enable: selectedOption" Value="Submit"/>
-                    </p>
- 
-                    <!-- <div data-bind="visible: selectedOption"> 
-                        
-                        <span data-bind="text: selectedOption() ? selectedOption().optionName : 'unknown'"></span>.
-                    </div> -->
-
-                    <ul class="location list" data-bind="foreach: searchResults">
-                        <li clas="location" data-bind="text: name, click: $parent.openInfowindow"></li>
-                    </ul>
-
+        <div id="map"></div>
+        <div class="container fixed">
+            <div id="museum">
+                <div class="title-box">
+                    <h2 class="text-center title">Houston's Museums</h2>
                 </div>
 
-                <div id = "map" class="col-md-8"></div>
-            </div>
+                <div class="input-group fixed">
+                    <select class="form-control" data-bind="options: availableOptions,
+                                                            optionsText: 'optionName',
+                                                            optionsValue: 'optionId',
+                                                            value: selectedOption">
+                    </select>
 
+                    <!-- <input type="button" data-bind="click: search, enable: selectedOption" Value="Submit"/> -->
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default show_hide" id="plus">
+                            <i class="glyphicon glyphicon-plus"></i>
+                        </button>
+                    </span>
+                </div>
+
+                <div class="slidingDiv museum-list">
+                    <ul class="list list-unstyled" data-bind="foreach: searchResults">
+                        <li class="hover-grey" data-bind="click:$parent.openInfowindow">
+                            <div>
+                                <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
+                                <span class="location" data-bind="text: name, click: $parent.openInfowindow"></span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
-        
- 
 
         <script src="js/lib/knockout-3.4.0.js"></script>
         <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
